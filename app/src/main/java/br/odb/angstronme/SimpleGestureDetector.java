@@ -5,6 +5,8 @@ package br.odb.angstronme;
  */
 public class SimpleGestureDetector {
 
+    public static final float TRIVIALITY_THRESHOLD = 50;
+
     public Vec2 acc = new Vec2(0, 0);
     public Vec2 touch = new Vec2(0, 0);
 
@@ -18,5 +20,12 @@ public class SimpleGestureDetector {
     public void reset() {
         acc.x = 0;
         acc.y = 0;
+    }
+
+    public boolean movementIsNegligible() {
+        float ax = Math.abs(acc.x);
+        float ay = Math.abs(acc.y);
+
+        return ( TRIVIALITY_THRESHOLD > ay ) && ( TRIVIALITY_THRESHOLD > ax );
     }
 }
