@@ -85,15 +85,15 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         x = player.x;
         y = player.y;
 
-        plane1[0] = Project(Grid(x + 1, y + 1));
-        plane1[1] = Project(Grid(x, y + 1));
-        plane1[2] = Project(Grid(x, y));
-        plane1[3] = Project(Grid(x + 1, y));
+        plane1[0] = project3DInto2D(Grid(x + 1, y + 1));
+        plane1[1] = project3DInto2D(Grid(x, y + 1));
+        plane1[2] = project3DInto2D(Grid(x, y));
+        plane1[3] = project3DInto2D(Grid(x + 1, y));
 
-        plane2[0] = Project(Grid(x + 1, y + 1), 0, -50, 0);
-        plane2[1] = Project(Grid(x, y + 1), 0, -50, 0);
-        plane2[2] = Project(Grid(x, y), 0, -50, 0);
-        plane2[3] = Project(Grid(x + 1, y), 0, -50, 0);
+        plane2[0] = project3DInto2DWithOffset(Grid(x + 1, y + 1), 0, -50, 0);
+        plane2[1] = project3DInto2DWithOffset(Grid(x, y + 1), 0, -50, 0);
+        plane2[2] = project3DInto2DWithOffset(Grid(x, y), 0, -50, 0);
+        plane2[3] = project3DInto2DWithOffset(Grid(x + 1, y), 0, -50, 0);
 
         drawCube(g, plane1, plane2);
     }
@@ -131,10 +131,10 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
                     continue;
                 }
 
-                p[0] = Project(Grid(x + 1, y + 1));
-                p[1] = Project(Grid(x, y + 1));
-                p[2] = Project(Grid(x, y));
-                p[3] = Project(Grid(x + 1, y));
+                p[0] = project3DInto2D(Grid(x + 1, y + 1));
+                p[1] = project3DInto2D(Grid(x, y + 1));
+                p[2] = project3DInto2D(Grid(x, y));
+                p[3] = project3DInto2D(Grid(x + 1, y));
 
                 drawLine(g, p[1].x, p[1].y, p[2].x, p[2].y);
                 drawLine(g, p[2].x, p[2].y, p[3].x, p[3].y);
@@ -165,10 +165,10 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
         Vec2[] p = new Vec2[4];
 
-        p[0] = Project(Grid(0, 0));
-        p[1] = Project(Grid(LEVEL_SIZE_X, 0));
-        p[2] = Project(Grid(LEVEL_SIZE_X, LEVEL_SIZE_Y));
-        p[3] = Project(Grid(0, LEVEL_SIZE_Y));
+        p[0] = project3DInto2D(Grid(0, 0));
+        p[1] = project3DInto2D(Grid(LEVEL_SIZE_X, 0));
+        p[2] = project3DInto2D(Grid(LEVEL_SIZE_X, LEVEL_SIZE_Y));
+        p[3] = project3DInto2D(Grid(0, LEVEL_SIZE_Y));
 
         setColor(0, 255, 0);
         drawLine(g, p[0].x, p[0].y, p[1].x, p[1].y);
@@ -178,6 +178,15 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         drawLine(g, p[2].x, p[2].y, p[3].x, p[3].y);
         setColor(0, 255, 0);
         drawLine(g, p[3].x, p[3].y, p[0].x, p[0].y);
+
+        Vec2 p2D;
+
+        for (float x = 0; x < LEVEL_SIZE_X; x+= 3) {
+            for (float y = 0; y < LEVEL_SIZE_Y; y+= 3) {
+                p2D = project3DInto2D(Grid(x, y ) );
+                g.drawPoint( p2D.x, p2D.y, paint );
+            }
+        }
     }
 
     private void drawHorizonLine(Canvas g) {
@@ -245,19 +254,21 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         }
     }
 
-    public Vec2 Project(Vec3 aVec, float offX, float offY, float offZ) {
-        return Project(aVec.x + offX, aVec.y + offY, aVec.z + offZ);
+    public Vec2 project3DInto2DWithOffset(Vec3 aVec, float offX, float offY, float offZ) {
+        return project3DInto2D(aVec.x + offX, aVec.y + offY, aVec.z + offZ);
     }
 
-    public Vec2 Project(Vec3 aVec) {
-        return Project(aVec.x, aVec.y, aVec.z);
+    public Vec2 project3DInto2D(Vec3 aVec) {
+        return project3DInto2D(aVec.x, aVec.y, aVec.z);
     }
 
-    public Vec2 Project(float x, float y, float z) {
+    public Vec2 project3DInto2D(float x, float y, float z) {
+
+        float ratio = getWidth() / getHeight();
 
         Vec2 v = new Vec2(0, 0);
-        v.x = (getWidth() / 2) - (x - cameraPosition.x) * 5 / (z - cameraPosition.z);
-        v.y = (getHeight() / 2) + (y - cameraPosition.y) * 5 / (z - cameraPosition.z);
+        v.x = (getWidth() / 2) - ( (x - cameraPosition.x) * 10 * 4 )/ (z - cameraPosition.z);
+        v.y = (getHeight() / 2) + ( (y - cameraPosition.y)  * 5 )/ (z - cameraPosition.z);
         return v;
     }
 
@@ -317,7 +328,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     private void updateCameraPositionFromPlayer() {
-        cameraPosition.y = -player.position.y - 70;
+        cameraPosition.y = -player.position.y - 100 * 5 * ( (float)player.position.y / LEVEL_SIZE_Y );
         cameraPosition.x = player.position.x * 600 / LEVEL_SIZE_X;
         cameraPosition.z = player.position.y / 20;
     }
