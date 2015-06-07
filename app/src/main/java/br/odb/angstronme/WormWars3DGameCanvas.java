@@ -1,5 +1,6 @@
 package br.odb.angstronme;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,9 +15,8 @@ import android.view.View;
  */
 public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
-    public final int LEVEL_SIZE_X = 80;
-    public final int LEVEL_SIZE_Y = 30;
-    final Player.Team[][] map = new Player.Team[LEVEL_SIZE_X][LEVEL_SIZE_Y];
+    int LEVEL_SIZE = 50;
+    final Player.Team[][] map = new Player.Team[LEVEL_SIZE][LEVEL_SIZE];
 
     final Player player = new Player(Player.Team.PLAYER);
     final Player bot = new Player(Player.Team.CPU);
@@ -120,8 +120,8 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
         Vec2[] p = new Vec2[4];
 
-        for (float x = 0; x < LEVEL_SIZE_X; x++) {
-            for (float y = 0; y < LEVEL_SIZE_Y; y++) {
+        for (float x = 0; x < LEVEL_SIZE; x++) {
+            for (float y = 0; y < LEVEL_SIZE; y++) {
 
                 if (getMap(x, y) == Player.Team.PLAYER) {
                     setColor(255, 0, 0);
@@ -145,8 +145,8 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     private void drawMap(Canvas g) {
-        for (float x = 0; x < LEVEL_SIZE_X; x++) {
-            for (float y = 0; y < LEVEL_SIZE_Y; y++) {
+        for (float x = 0; x < LEVEL_SIZE; x++) {
+            for (float y = 0; y < LEVEL_SIZE; y++) {
 
                 if (getMap(x, y) == Player.Team.PLAYER) {
                     setColor(255, 0, 0);
@@ -156,7 +156,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
                     continue;
                 }
 
-                drawRect(g, (int) (LEVEL_SIZE_X - x), (int) (2 * (LEVEL_SIZE_Y - y)), 1, 2);
+                drawRect(g, (int) (LEVEL_SIZE - x), (int) (2 * (LEVEL_SIZE - y)), 1, 2);
             }
         }
     }
@@ -166,9 +166,9 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         Vec2[] p = new Vec2[4];
 
         p[0] = project3DInto2D(Grid(0, 0));
-        p[1] = project3DInto2D(Grid(LEVEL_SIZE_X, 0));
-        p[2] = project3DInto2D(Grid(LEVEL_SIZE_X, LEVEL_SIZE_Y));
-        p[3] = project3DInto2D(Grid(0, LEVEL_SIZE_Y));
+        p[1] = project3DInto2D(Grid(LEVEL_SIZE, 0));
+        p[2] = project3DInto2D(Grid(LEVEL_SIZE, LEVEL_SIZE));
+        p[3] = project3DInto2D(Grid(0, LEVEL_SIZE));
 
         setColor(0, 255, 0);
         drawLine(g, p[0].x, p[0].y, p[1].x, p[1].y);
@@ -181,8 +181,8 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
         Vec2 p2D;
 
-        for (float x = 0; x < LEVEL_SIZE_X; x+= 3) {
-            for (float y = 0; y < LEVEL_SIZE_Y; y+= 3) {
+        for (float x = 0; x < LEVEL_SIZE; x+= 3) {
+            for (float y = 0; y < LEVEL_SIZE; y+= 3) {
                 p2D = project3DInto2D(Grid(x, y ) );
                 g.drawPoint( p2D.x, p2D.y, paint );
             }
@@ -208,47 +208,47 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     public Player.Team getMap(float aX, float aY) {
-        if (aX <= 0 || aX >= LEVEL_SIZE_X || aY >= LEVEL_SIZE_Y || aY <= 0) {
+        if (aX <= 0 || aX >= LEVEL_SIZE || aY >= LEVEL_SIZE || aY <= 0) {
             return Player.Team.PLAYER;
         }
         return map[((int) aX)][((int) aY)];
     }
 
     public void setMap(float aX, float aY, Player.Team aValue) {
-        if (aX <= 0 || aX >= LEVEL_SIZE_X || aY >= LEVEL_SIZE_Y || aY <= 0) {
+        if (aX <= 0 || aX >= LEVEL_SIZE || aY >= LEVEL_SIZE || aY <= 0) {
             return;
         }
         map[((int) aX)][((int) aY)] = aValue;
     }
 
     public void init() {
-        RestartGame();
         this.setOnTouchListener(this);
     }
 
     public Vec3 Grid(int x, int y) {
-        return new Vec3(((600 / LEVEL_SIZE_X) * x), 5, (y) + 3);
+        return new Vec3(((600 / LEVEL_SIZE) * x), 5, (y) + 3);
     }
 
     public Vec3 Grid(float x, float y) {
-        return new Vec3(((600 / LEVEL_SIZE_X) * x), 5, (y) + 3);
+        return new Vec3(((600 / LEVEL_SIZE) * x), 5, (y) + 3);
     }
 
-    public void RestartGame() {
+    public void RestartGame( int sizeOffset ) {
 
+        LEVEL_SIZE -= sizeOffset;
         player.direction = Player.Directions.S;
         player.position.set(1, 1, 0);
 
         bot.direction = Player.Directions.N;
-        bot.position.set(LEVEL_SIZE_X / 2, LEVEL_SIZE_Y / 2, 0);
+        bot.position.set(LEVEL_SIZE / 2, LEVEL_SIZE / 2, 0);
 
         updateCameraPositionFromPlayer();
         resetMap();
     }
 
     private void resetMap() {
-        for (int x = 0; x < LEVEL_SIZE_X; x++) {
-            for (int y = 0; y < LEVEL_SIZE_Y; y++) {
+        for (int x = 0; x < LEVEL_SIZE; x++) {
+            for (int y = 0; y < LEVEL_SIZE; y++) {
                 setMap(x, y, Player.Team.NOTHING);
             }
         }
@@ -272,7 +272,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         return v;
     }
 
-    public void Update() {
+    public void update() {
 
         enclosePlayer(player.position);
         enclosePlayer(bot.position);
@@ -284,6 +284,18 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
         player.updatePosition();
         bot.updatePosition();
+
+        if ( getMap( player.position.x, player.position.y) != Player.Team.NOTHING ) {
+            ( (Activity)getContext() ).setResult( 1 );
+            ( (Activity)getContext() ).finish();
+        }
+
+        if ( getMap( bot.position.x, bot.position.y) != Player.Team.NOTHING ) {
+            ( (Activity)getContext() ).setResult( 2 );
+            ( (Activity)getContext() ).finish();
+        }
+
+
 
         switch (bot.direction) {
             case N:
@@ -313,11 +325,11 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     private void enclosePlayer(Vec3 player) {
-        if (player.x >= LEVEL_SIZE_X) {
-            player.x = LEVEL_SIZE_X - 1;
+        if (player.x >= LEVEL_SIZE) {
+            player.x = LEVEL_SIZE - 1;
         }
-        if (player.y >= LEVEL_SIZE_Y) {
-            player.y = LEVEL_SIZE_Y - 1;
+        if (player.y >= LEVEL_SIZE) {
+            player.y = LEVEL_SIZE - 1;
         }
         if (player.x < 0) {
             player.x = 0;
@@ -328,8 +340,8 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     private void updateCameraPositionFromPlayer() {
-        cameraPosition.y = -player.position.y - 100 * 5 * ( (float)player.position.y / LEVEL_SIZE_Y );
-        cameraPosition.x = player.position.x * 600 / LEVEL_SIZE_X;
+        cameraPosition.y = -player.position.y - 100 * 5 * ( (float)player.position.y / LEVEL_SIZE );
+        cameraPosition.x = player.position.x * 600 / LEVEL_SIZE;
         cameraPosition.z = player.position.y / 20;
     }
 

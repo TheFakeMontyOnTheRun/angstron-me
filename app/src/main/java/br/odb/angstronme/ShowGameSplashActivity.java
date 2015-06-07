@@ -43,6 +43,20 @@ public class ShowGameSplashActivity extends ActionBarActivity implements View.On
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this, PlayGameActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if ( requestCode >= 5 ) {
+
+        } else if ( resultCode == 2  ) {
+            Intent intent = new Intent(this, PlayGameActivity.class);
+            intent.putExtra("level", ++requestCode );
+            startActivityForResult( intent, requestCode );
+        }
     }
 }

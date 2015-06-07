@@ -23,6 +23,7 @@ public class PlayGameActivity extends Activity {
         setContentView(R.layout.activity_play_game);
 
         canvas = (WormWars3DGameCanvas) findViewById(R.id.gameView);
+        canvas.RestartGame(getIntent().getIntExtra( "level", 0 ) * 5 );
     }
 
     void updateOnMainThread() {
@@ -56,7 +57,7 @@ public class PlayGameActivity extends Activity {
                         e.printStackTrace();
                     }
 
-                    canvas.Update();
+                    canvas.update();
                 }
             }
         }).start();
