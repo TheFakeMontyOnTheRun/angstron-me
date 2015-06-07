@@ -181,10 +181,10 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
         Vec2 p2D;
 
-        for (float x = 0; x < LEVEL_SIZE; x+= 3) {
-            for (float y = 0; y < LEVEL_SIZE; y+= 3) {
-                p2D = project3DInto2D(Grid(x, y ) );
-                g.drawPoint( p2D.x, p2D.y, paint );
+        for (float x = 0; x < LEVEL_SIZE; x += 3) {
+            for (float y = 0; y < LEVEL_SIZE; y += 3) {
+                p2D = project3DInto2D(Grid(x, y));
+                g.drawPoint(p2D.x, p2D.y, paint);
             }
         }
     }
@@ -233,7 +233,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         return new Vec3(((600 / LEVEL_SIZE) * x), 5, (y) + 3);
     }
 
-    public void RestartGame( int sizeOffset ) {
+    public void RestartGame(int sizeOffset) {
 
         LEVEL_SIZE -= sizeOffset;
         player.direction = Player.Directions.S;
@@ -267,8 +267,8 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         float ratio = getWidth() / getHeight();
 
         Vec2 v = new Vec2(0, 0);
-        v.x = (getWidth() / 2) - ( (x - cameraPosition.x) * 10 * 4 )/ (z - cameraPosition.z);
-        v.y = (getHeight() / 2) + ( (y - cameraPosition.y)  * 5 )/ (z - cameraPosition.z);
+        v.x = (getWidth() / 2) - ((x - cameraPosition.x) * 10 * 4) / (z - cameraPosition.z);
+        v.y = (getHeight() / 2) + ((y - cameraPosition.y) * 5) / (z - cameraPosition.z);
         return v;
     }
 
@@ -285,16 +285,15 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         player.updatePosition();
         bot.updatePosition();
 
-        if ( getMap( player.position.x, player.position.y) != Player.Team.NOTHING ) {
-            ( (Activity)getContext() ).setResult( 1 );
-            ( (Activity)getContext() ).finish();
+        if (getMap(player.position.x, player.position.y) != Player.Team.NOTHING) {
+            ((Activity) getContext()).setResult(1);
+            ((Activity) getContext()).finish();
         }
 
-        if ( getMap( bot.position.x, bot.position.y) != Player.Team.NOTHING ) {
-            ( (Activity)getContext() ).setResult( 2 );
-            ( (Activity)getContext() ).finish();
+        if (getMap(bot.position.x, bot.position.y) != Player.Team.NOTHING) {
+            ((Activity) getContext()).setResult(2);
+            ((Activity) getContext()).finish();
         }
-
 
 
         switch (bot.direction) {
@@ -340,7 +339,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     private void updateCameraPositionFromPlayer() {
-        cameraPosition.y = -player.position.y - 100 * 5 * ( (float)player.position.y / LEVEL_SIZE );
+        cameraPosition.y = -player.position.y - 100 * 5 * ( player.position.y / LEVEL_SIZE);
         cameraPosition.x = player.position.x * 600 / LEVEL_SIZE;
         cameraPosition.z = player.position.y / 20;
     }
@@ -352,7 +351,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
     boolean keyPressed(int gameCode) {
 
-        Player.Directions d = Controls.directionFrom(gameCode);
+        Player.Directions d = Controls.directionFrom(gameCode, player.direction);
 
         if (d != null) {
             player.direction = d;
@@ -370,6 +369,10 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         } else {
 
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+
+                if (gestureDetector.movementIsNegligible()) {
+                    return true;
+                }
 
                 if (gestureDetector.isHorizontal()) {
                     if (gestureDetector.acc.x > 0) {
@@ -397,23 +400,26 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     enum Controls {
-        Up(KeyEvent.KEYCODE_DPAD_UP, Player.Directions.N),
-        Down(KeyEvent.KEYCODE_DPAD_DOWN, Player.Directions.S),
-        Left(KeyEvent.KEYCODE_DPAD_LEFT, Player.Directions.W),
-        Right(KeyEvent.KEYCODE_DPAD_RIGHT, Player.Directions.E);
+        Up(KeyEvent.KEYCODE_DPAD_UP, Player.Directions.N, Player.Directions.S),
+        Down(KeyEvent.KEYCODE_DPAD_DOWN, Player.Directions.S, Player.Directions.N),
+        Left(KeyEvent.KEYCODE_DPAD_LEFT, Player.Directions.W, Player.Directions.E),
+        Right(KeyEvent.KEYCODE_DPAD_RIGHT, Player.Directions.E, Player.Directions.W);
 
         public final int keycode;
         public final Player.Directions direction;
+        public final Player.Directions oposite;
 
-        Controls(int keycode, Player.Directions direction) {
+        Controls(int keycode, Player.Directions direction, Player.Directions oposite) {
             this.direction = direction;
             this.keycode = keycode;
+            this.oposite = oposite;
         }
 
-        public static Player.Directions directionFrom(int keycode) {
+
+        public static Player.Directions directionFrom(int keycode, Player.Directions current ) {
 
             for (Controls c : values()) {
-                if (c.keycode == keycode) {
+                if (c.keycode == keycode && c.oposite != current ) {
                     return c.direction;
                 }
             }
