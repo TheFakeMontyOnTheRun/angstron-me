@@ -13,7 +13,7 @@ import android.view.View;
 /**
  * Created by monty on 6/5/15.
  */
-public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
+public class Angtron3DGameCanvas extends View implements View.OnTouchListener {
 
     int LEVEL_SIZE = 50;
     final Player.Team[][] map = new Player.Team[LEVEL_SIZE][LEVEL_SIZE];
@@ -26,19 +26,19 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     final Paint paint = new Paint();
     final SimpleGestureDetector gestureDetector = new SimpleGestureDetector();
 
-    public WormWars3DGameCanvas(Context context) {
+    public Angtron3DGameCanvas(Context context) {
         super(context);
 
         init();
     }
 
-    public WormWars3DGameCanvas(Context context, AttributeSet attrs) {
+    public Angtron3DGameCanvas(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         init();
     }
 
-    public WormWars3DGameCanvas(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Angtron3DGameCanvas(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         init();
@@ -64,10 +64,10 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         drawBackground(g);
         drawHorizonLine(g);
         drawTrails(g);
-        drawMap(g);
         drawPlayer(g, player.position);
         drawPlayer(g, bot.position);
         drawArena(g);
+        drawMap(g);
     }
 
     private void clearDirtyScreenArea(Canvas g) {
@@ -145,18 +145,25 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     }
 
     private void drawMap(Canvas g) {
+
+        int mapPositionX = ( - LEVEL_SIZE / 2 ) + getWidth() / 2;
+        int mapPositionY = ( - LEVEL_SIZE ) + getHeight();
+        Player.Team team;
+
         for (float x = 0; x < LEVEL_SIZE; x++) {
             for (float y = 0; y < LEVEL_SIZE; y++) {
 
-                if (getMap(x, y) == Player.Team.PLAYER) {
+                team = getMap( ( LEVEL_SIZE - x), ( LEVEL_SIZE - y));
+
+                if ( team == Player.Team.PLAYER) {
                     setColor(255, 0, 0);
-                } else if (getMap(x, y) == Player.Team.CPU) {
+                } else if ( team == Player.Team.CPU) {
                     setColor(0, 0, 255);
                 } else {
-                    continue;
+                    setColor(0, 255, 0);
                 }
 
-                drawRect(g, (int) (LEVEL_SIZE - x), (int) (2 * (LEVEL_SIZE - y)), 1, 2);
+                drawRect(g, mapPositionX + x, mapPositionY + y, mapPositionX + x + 1, mapPositionY + y + 1 );
             }
         }
     }
@@ -166,9 +173,9 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
         Vec2[] p = new Vec2[4];
 
         p[0] = project3DInto2D(Grid(0, 0));
-        p[1] = project3DInto2D(Grid(LEVEL_SIZE, 0));
-        p[2] = project3DInto2D(Grid(LEVEL_SIZE, LEVEL_SIZE));
-        p[3] = project3DInto2D(Grid(0, LEVEL_SIZE));
+        p[1] = project3DInto2D(Grid(LEVEL_SIZE - 1, 0));
+        p[2] = project3DInto2D(Grid(LEVEL_SIZE - 1, LEVEL_SIZE - 1));
+        p[3] = project3DInto2D(Grid(0, LEVEL_SIZE - 1));
 
         setColor(0, 255, 0);
         drawLine(g, p[0].x, p[0].y, p[1].x, p[1].y);
@@ -209,7 +216,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
 
     public Player.Team getMap(float aX, float aY) {
         if (aX <= 0 || aX >= LEVEL_SIZE || aY >= LEVEL_SIZE || aY <= 0) {
-            return Player.Team.PLAYER;
+            return Player.Team.NOTHING;
         }
         return map[((int) aX)][((int) aY)];
     }
@@ -341,7 +348,7 @@ public class WormWars3DGameCanvas extends View implements View.OnTouchListener {
     private void updateCameraPositionFromPlayer() {
         cameraPosition.y = -player.position.y - 100 * 5 * ( player.position.y / LEVEL_SIZE);
         cameraPosition.x = player.position.x * 600 / LEVEL_SIZE;
-        cameraPosition.z = player.position.y / 20;
+        cameraPosition.z = 1
     }
 
     @Override

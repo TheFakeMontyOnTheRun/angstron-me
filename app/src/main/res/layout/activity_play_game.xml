@@ -13,7 +13,7 @@
     <view
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        class="br.odb.angstronme.WormWars3DGameCanvas"
+        class="br.odb.angstronme.Angtron3DGameCanvas"
         android:id="@+id/gameView"
         android:layout_gravity="left|top" />
 </FrameLayout>

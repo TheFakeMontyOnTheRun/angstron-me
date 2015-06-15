@@ -8,7 +8,7 @@ public class PlayGameActivity extends Activity {
 
 
     private static final String DEBUG_TAG = "WW3D";
-    WormWars3DGameCanvas canvas;
+    Angtron3DGameCanvas canvas;
 
     Runnable updateRunnable = new Runnable() {
         public void run() {
@@ -22,7 +22,7 @@ public class PlayGameActivity extends Activity {
 
         setContentView(R.layout.activity_play_game);
 
-        canvas = (WormWars3DGameCanvas) findViewById(R.id.gameView);
+        canvas = (Angtron3DGameCanvas) findViewById(R.id.gameView);
         canvas.RestartGame(getIntent().getIntExtra( "level", 0 ) * 5 );
     }
 
