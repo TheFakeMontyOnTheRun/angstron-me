@@ -348,7 +348,7 @@ public class Angtron3DGameCanvas extends View implements View.OnTouchListener {
     private void updateCameraPositionFromPlayer() {
         cameraPosition.y = -player.position.y - 100 * 5 * ( player.position.y / LEVEL_SIZE);
         cameraPosition.x = player.position.x * 600 / LEVEL_SIZE;
-        cameraPosition.z = 1
+        cameraPosition.z = 1;
     }
 
     @Override
