@@ -2,13 +2,14 @@ package br.odb.angstronme;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
 
-public class ShowGameSplashActivity extends ActionBarActivity implements View.OnClickListener {
+
+public class ShowGameSplashActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
