@@ -10,11 +10,11 @@ package br.odb.angstronme;
  * @author daniel
  */
 public class Vec2 {
-    float x;
-    float y;
+	float x;
+	float y;
 
-    public Vec2(float aX, float aY) {
-        x = aX;
-        y = aY;
-    }
+	public Vec2(float aX, float aY) {
+		x = aX;
+		y = aY;
+	}
 }

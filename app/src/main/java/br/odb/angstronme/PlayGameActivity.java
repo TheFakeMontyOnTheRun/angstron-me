@@ -7,72 +7,72 @@ import android.view.KeyEvent;
 public class PlayGameActivity extends Activity {
 
 
-    private static final String DEBUG_TAG = "WW3D";
-    Angtron3DGameCanvas canvas;
+	private static final String DEBUG_TAG = "WW3D";
+	Angtron3DGameCanvas canvas;
 
-    Runnable updateRunnable = new Runnable() {
-        public void run() {
-            canvas.invalidate();
-        }
-    };
+	Runnable updateRunnable = new Runnable() {
+		public void run() {
+			canvas.invalidate();
+		}
+	};
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_play_game);
+		setContentView(R.layout.activity_play_game);
 
-        canvas = (Angtron3DGameCanvas) findViewById(R.id.gameView);
-        canvas.RestartGame(getIntent().getIntExtra( "level", 0 ) * 5 );
-    }
+		canvas = findViewById(R.id.gameView);
+		canvas.RestartGame(getIntent().getIntExtra("level", 0) * 5);
+	}
 
-    void updateOnMainThread() {
-        runOnUiThread(updateRunnable);
-    }
+	void updateOnMainThread() {
+		runOnUiThread(updateRunnable);
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+	@Override
+	protected void onResume() {
+		super.onResume();
 
-        new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+		new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 
-                    updateOnMainThread();
-                }
-            }
-        }).start();
+					updateOnMainThread();
+				}
+			}
+		}).start();
 
-        new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+		new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 
-                    canvas.update();
-                }
-            }
-        }).start();
+					canvas.update();
+				}
+			}
+		}).start();
 
-        canvas.requestFocus();
-    }
+		canvas.requestFocus();
+	}
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if ( keyCode == KeyEvent.KEYCODE_BACK ) {
-            finish();
-            return true;
-        }
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			finish();
+			return true;
+		}
 
-        return canvas.onKeyDown(keyCode, event);
-    }
+		return canvas.onKeyDown(keyCode, event);
+	}
 }
