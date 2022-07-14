@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_play_game.*
 
 class PlayGameActivity : AppCompatActivity() {
-    var updateRunnable = Runnable { gameView.invalidate() }
+    private var updateRunnable = Runnable { gameView.invalidate() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,13 +14,13 @@ class PlayGameActivity : AppCompatActivity() {
         gameView.RestartGame(intent.getIntExtra("level", 0) * 5)
     }
 
-    fun updateOnMainThread() {
+    private fun updateOnMainThread() {
         runOnUiThread(updateRunnable)
     }
 
     override fun onResume() {
         super.onResume()
-        Thread(Runnable {
+        Thread {
             while (true) {
                 try {
                     Thread.sleep(100)
@@ -29,8 +29,8 @@ class PlayGameActivity : AppCompatActivity() {
                 }
                 updateOnMainThread()
             }
-        }).start()
-        Thread(Runnable {
+        }.start()
+        Thread {
             while (true) {
                 try {
                     Thread.sleep(100)
@@ -39,7 +39,7 @@ class PlayGameActivity : AppCompatActivity() {
                 }
                 gameView.update()
             }
-        }).start()
+        }.start()
         gameView.requestFocus()
     }
 
@@ -52,6 +52,5 @@ class PlayGameActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val DEBUG_TAG = "WW3D"
     }
 }

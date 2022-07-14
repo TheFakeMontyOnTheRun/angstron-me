@@ -16,13 +16,13 @@ import br.odb.angstronme.Player.Team
  * Created by monty on 6/5/15.
  */
 class Angtron3DGameCanvas : View, OnTouchListener {
-	val player = Player(Team.PLAYER)
-	val bot = Player(Team.CPU)
-	val cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
-	val paint = Paint()
-	val gestureDetector = SimpleGestureDetector()
-	var LEVEL_SIZE = 50
-	val map = Array(LEVEL_SIZE) { arrayOfNulls<Team>(LEVEL_SIZE) }
+	private val player = Player()
+	private val bot = Player()
+	private val cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
+	private val paint = Paint()
+	private val gestureDetector = SimpleGestureDetector()
+	private var LEVEL_SIZE = 50
+	private val map = Array(LEVEL_SIZE) { arrayOfNulls<Team>(LEVEL_SIZE) }
 
 	constructor(context: Context?) : super(context) {
 		init()
@@ -40,15 +40,15 @@ class Angtron3DGameCanvas : View, OnTouchListener {
 		init()
 	}
 
-	fun setColor(r: Int, g: Int, b: Int) {
+	private fun setColor(r: Int, g: Int, b: Int) {
 		paint.color = Color.argb(255, r, g, b)
 	}
 
-	fun drawRect(g: Canvas, x0: Float, y0: Float, x1: Float, y1: Float) {
+	private fun drawRect(g: Canvas, x0: Float, y0: Float, x1: Float, y1: Float) {
 		g.drawRect(x0, y0, x1, y1, paint)
 	}
 
-	fun drawLine(g: Canvas, x0: Float, y0: Float, x1: Float, y1: Float) {
+	private fun drawLine(g: Canvas, x0: Float, y0: Float, x1: Float, y1: Float) {
 		g.drawLine(x0, y0, x1, y1, paint)
 	}
 
@@ -72,10 +72,8 @@ class Angtron3DGameCanvas : View, OnTouchListener {
 	private fun drawPlayer(g: Canvas, player: Vec3) {
 		val plane1 = arrayOfNulls<Vec2>(4)
 		val plane2 = arrayOfNulls<Vec2>(4)
-		val x: Float
-		val y: Float
-		x = player.x
-		y = player.y
+		val x = player.x
+		val y: Float = player.y
 		plane1[0] = project3DInto2D(Grid(x + 1, y + 1))
 		plane1[1] = project3DInto2D(Grid(x, y + 1))
 		plane1[2] = project3DInto2D(Grid(x, y))
@@ -184,12 +182,9 @@ class Angtron3DGameCanvas : View, OnTouchListener {
 	}
 
 	private fun drawBackground(g: Canvas) {
-		var y2: Int
-		val ratio: Float
-		var _y: Float
-		ratio = 256.0f / (height.toFloat() / 2.0f)
-		y2 = 0
-		_y = 255.0f
+		val ratio: Float = 256.0f / (height.toFloat() / 2.0f)
+		var y2: Int = 0
+		var _y: Float = 255.0f
 		while (_y > 0.0f) {
 			setColor(_y.toInt(), 0, 0)
 			drawLine(g, 0f, y2.toFloat(), width.toFloat(), y2.toFloat())
@@ -198,28 +193,28 @@ class Angtron3DGameCanvas : View, OnTouchListener {
 		}
 	}
 
-	fun getMap(aX: Float, aY: Float): Team? {
+	private fun getMap(aX: Float, aY: Float): Team? {
 		return if (aX <= 0 || aX >= LEVEL_SIZE || aY >= LEVEL_SIZE || aY <= 0) {
 			Team.NOTHING
 		} else map[aX.toInt()][aY.toInt()]
 	}
 
-	fun setMap(aX: Float, aY: Float, aValue: Team?) {
+	private fun setMap(aX: Float, aY: Float, aValue: Team?) {
 		if (aX <= 0 || aX >= LEVEL_SIZE || aY >= LEVEL_SIZE || aY <= 0) {
 			return
 		}
 		map[aX.toInt()][aY.toInt()] = aValue
 	}
 
-	fun init() {
+	private fun init() {
 		setOnTouchListener(this)
 	}
 
-	fun Grid(x: Int, y: Int): Vec3 {
+	private fun Grid(x: Int, y: Int): Vec3 {
 		return Vec3((600 / LEVEL_SIZE * x).toFloat(), 5.0f, (y + 3).toFloat())
 	}
 
-	fun Grid(x: Float, y: Float): Vec3 {
+	private fun Grid(x: Float, y: Float): Vec3 {
 		return Vec3(600 / LEVEL_SIZE * x, 5.0f, y + 3)
 	}
 
@@ -241,15 +236,15 @@ class Angtron3DGameCanvas : View, OnTouchListener {
 		}
 	}
 
-	fun project3DInto2DWithOffset(aVec: Vec3, offX: Float, offY: Float, offZ: Float): Vec2 {
+	private fun project3DInto2DWithOffset(aVec: Vec3, offX: Float, offY: Float, offZ: Float): Vec2 {
 		return project3DInto2D(aVec.x + offX, aVec.y + offY, aVec.z + offZ)
 	}
 
-	fun project3DInto2D(aVec: Vec3): Vec2 {
+	private fun project3DInto2D(aVec: Vec3): Vec2 {
 		return project3DInto2D(aVec.x, aVec.y, aVec.z)
 	}
 
-	fun project3DInto2D(x: Float, y: Float, z: Float): Vec2 {
+	private fun project3DInto2D(x: Float, y: Float, z: Float): Vec2 {
 		val ratio = (width / height).toFloat()
 		val v = Vec2(0.0f, 0.0f)
 		v.x = width / 2 - (x - cameraPosition.x) * 10 * 4 / (z - cameraPosition.z)
@@ -327,7 +322,7 @@ class Angtron3DGameCanvas : View, OnTouchListener {
 		return keyPressed(keyCode)
 	}
 
-	fun keyPressed(gameCode: Int): Boolean {
+	private fun keyPressed(gameCode: Int): Boolean {
 		val d = Controls.directionFrom(gameCode, player.direction)
 		if (d != null) {
 			player.direction = d

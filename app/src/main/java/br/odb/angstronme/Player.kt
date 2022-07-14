@@ -1,12 +1,9 @@
 package br.odb.angstronme
 
-import br.odb.angstronme.Player.Team
-import br.odb.angstronme.Vec3
-
 /**
  * Created by monty on 6/6/15.
  */
-class Player(val team: Team) {
+class Player {
 	@JvmField
 	val position = Vec3(0.0f, 0.0f, 0.0f)
 	@JvmField
@@ -22,7 +19,7 @@ class Player(val team: Team) {
 	}
 
 	enum class Team {
-		NOTHING, PLAYER, Team, CPU
+		NOTHING, PLAYER, CPU
 	}
 
 	enum class Directions {

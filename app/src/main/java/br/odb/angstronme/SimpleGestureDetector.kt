@@ -1,7 +1,5 @@
 package br.odb.angstronme
 
-import br.odb.angstronme.Vec2
-import br.odb.angstronme.SimpleGestureDetector
 import kotlin.math.abs
 
 /**
