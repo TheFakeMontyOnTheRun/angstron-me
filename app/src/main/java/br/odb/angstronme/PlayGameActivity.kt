@@ -1,11 +1,11 @@
 package br.odb.angstronme
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.KeyEvent
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_play_game.*
 
-class PlayGameActivity : Activity() {
+class PlayGameActivity : AppCompatActivity() {
     var updateRunnable = Runnable { gameView.invalidate() }
 
     override fun onCreate(savedInstanceState: Bundle?) {

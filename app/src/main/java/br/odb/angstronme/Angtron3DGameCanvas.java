@@ -1,6 +1,5 @@
 package br.odb.angstronme;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +8,8 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by monty on 6/5/15.
@@ -290,13 +291,13 @@ public class Angtron3DGameCanvas extends View implements View.OnTouchListener {
 		bot.updatePosition();
 
 		if (getMap(player.position.x, player.position.y) != Player.Team.NOTHING) {
-			((Activity) getContext()).setResult(1);
-			((Activity) getContext()).finish();
+			((AppCompatActivity) getContext()).setResult(1);
+			((AppCompatActivity) getContext()).finish();
 		}
 
 		if (getMap(bot.position.x, bot.position.y) != Player.Team.NOTHING) {
-			((Activity) getContext()).setResult(2);
-			((Activity) getContext()).finish();
+			((AppCompatActivity) getContext()).setResult(2);
+			((AppCompatActivity) getContext()).finish();
 		}
 
 
